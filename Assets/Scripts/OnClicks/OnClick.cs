@@ -127,9 +127,16 @@ public class OnClick : MonoBehaviour, IPointerClickHandler
 
                                 break;
                             case ItemName.Grifo:
+                                AudioManager.Instance.emitAudio(Audios.Key);
+                                GameManager.Instance.DisableGrifo();
 
                                 break;
-                            
+
+                            case ItemName.Llave:
+                                AudioManager.Instance.emitAudio(Audios.Hatch);
+                                GameSceneManager.Instance.LoadFinalChilds();
+                                break;
+
                         }
                     }
                     else

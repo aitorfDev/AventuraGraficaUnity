@@ -16,14 +16,16 @@ public enum ItemName
 {
     Nada,
     Cuchillo,
+    Llave,
     Grifo,
+    Alfombra,
 }
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
     public ButtonState CurrentState { get; private set; } = ButtonState.NadaClicked;
-    public ItemName ActualItemClicked { get; private set; } = ItemName.Nada;
+    public ItemName ActualItemClicked { get; set; } = ItemName.Nada;
 
 
     private DialogManager dialogManager;
@@ -31,6 +33,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject inventoryGrid;
     [SerializeField] private GameObject itemPickups;
+
+    [SerializeField] private GameObject ItemKey;
+    [SerializeField] private GameObject ItemGrifo;
+    [SerializeField] private GameObject ItemCuchillo;
+
+    [SerializeField] private GameObject ItemLlaveSuelta;
 
     private TMP_Text textComponent;
     private Image imageComponent;
@@ -73,6 +81,21 @@ public class GameManager : MonoBehaviour
 
         textComponent.text = "Nuevo objeto recogido!";
         imageComponent.sprite = gameObjectParam.GetComponent<ItemInfo>().sprtEnInventario; // ejemplo
+        ItemName itemnamee = gameObjectParam.GetComponent<ItemInfo>().itemType; // ejemplo
+        switch (itemnamee)
+        {
+            case ItemName.Cuchillo:
+                ItemCuchillo.SetActive(true);
+                break;
+            case ItemName.Llave:
+                ItemKey.SetActive(true);
+                break;
+            case ItemName.Grifo:
+                ItemGrifo.SetActive(true);
+                break;
+            default:
+                break;
+        }
         itemPickups.SetActive(true);
         StartCoroutine(HideItemPickup());
     }
@@ -96,5 +119,13 @@ public class GameManager : MonoBehaviour
     {
         dialogManager.setDialog(dialog);
     }
+
+    public void DisableGrifo()
+    {
+        ItemGrifo.SetActive(false);
+        ItemLlaveSuelta.SetActive(true);
+    }
+
+   
 }
 

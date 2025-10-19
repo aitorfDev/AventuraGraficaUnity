@@ -1,4 +1,5 @@
-using System.Collections; 
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,20 +9,21 @@ public enum Personajes
     Detective,
     Abuela,
     Nada
-}   
+}
+
 public class Dialog
 {
     public string speakerName;
     public string text;
     public int textSpeed;
     public Personajes personaje;
+
     public Dialog()
     {
         speakerName = "Tú";
         text = "";
         textSpeed = 5;
         personaje = Personajes.Detective;
-
     }
 }
 
@@ -44,81 +46,82 @@ public class DialogManager : MonoBehaviour
     [SerializeField] private Sprite spriteNull;
 
     private bool isTyping = false;
+    private Queue<Dialog> dialogQueue = new Queue<Dialog>();
 
     public static DialogManager Instance { get; private set; }
+
     void Awake()
     {
-
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
-        {
             Destroy(gameObject);
-        }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         speakerDialogBox.text = "";
         textDialogBox.text = "";
-
         imageComponent = charImage.GetComponent<Image>();
     }
 
     public void setDialog(Dialog dialog)
     {
-        
-        if (dialog.personaje == Personajes.Detective)
-        {
-            imageComponent.sprite = spriteDetective;
-        }
-        else if (dialog.personaje == Personajes.Abuela)
-        {
-            imageComponent.sprite = spriteAbuela;
+        dialogQueue.Enqueue(dialog);
 
-        }
-        else
-        {
-            imageComponent.sprite = spriteNull;
-        }
-
+        // Si no hay ningún diálogo escribiéndose, iniciar uno
         if (!isTyping)
         {
-            isTyping = true;
-            SetButtonsInteractable(false);
+            StartCoroutine(ProcessNextDialog());
+        }
+    }
 
-            // Actualiza el nombre del hablante
-            if(dialog.speakerName != "")
-            {
-                speakerDialogBox.text = $"{dialog.speakerName} : ";
-
-            }
-            else{
-                speakerDialogBox.text = dialog.speakerName;
-
-            }
-
-            // Inicia la corrutina para escribir el texto
-            StartCoroutine(TypeText(dialog));
+    private IEnumerator ProcessNextDialog()
+    {
+        while (dialogQueue.Count > 0)
+        {
+            Dialog dialog = dialogQueue.Dequeue();
+            yield return StartCoroutine(TypeText(dialog));
         }
     }
 
     private IEnumerator TypeText(Dialog dialog)
     {
-        textDialogBox.text = "";
+        isTyping = true;
+        SetButtonsInteractable(false);
 
+        // Imagen del personaje
+        switch (dialog.personaje)
+        {
+            case Personajes.Detective:
+                imageComponent.sprite = spriteDetective;
+                break;
+            case Personajes.Abuela:
+                imageComponent.sprite = spriteAbuela;
+                break;
+            default:
+                imageComponent.sprite = spriteNull;
+                break;
+        }
+
+        // Nombre del hablante
+        speakerDialogBox.text = string.IsNullOrEmpty(dialog.speakerName)
+            ? ""
+            : $"{dialog.speakerName} : ";
+
+        // Texto con efecto de escritura
+        textDialogBox.text = "";
         foreach (char c in dialog.text)
         {
             textDialogBox.text += c;
-            yield return new WaitForSeconds(0.5f/dialog.textSpeed); 
+            yield return new WaitForSeconds(0.5f / dialog.textSpeed);
         }
-        SetButtonsInteractable(true);
 
+        // Fin del diálogo
+        SetButtonsInteractable(true);
         isTyping = false;
     }
+
     private void SetButtonsInteractable(bool value)
     {
         btMirar.interactable = value;
@@ -130,20 +133,14 @@ public class DialogManager : MonoBehaviour
 
     public void ResetButtons()
     {
- 
         Color normalColor = Color.white;
-
         ColorBlock colorBlock = btMirar.colors;
         colorBlock.normalColor = normalColor;
 
-        // Assign the modified ColorBlock to all buttons
         btMirar.colors = colorBlock;
         btUsar.colors = colorBlock;
         btCoger.colors = colorBlock;
         btHablar.colors = colorBlock;
         btInventario.colors = colorBlock;
-
-        return;
-        
     }
 }
