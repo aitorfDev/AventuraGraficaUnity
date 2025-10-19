@@ -577,7 +577,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Llevamos ya semanas con este caso y a\xFAn no sabemos nada de los ni\xF1os.
     \n\r\nEsta casa es una de las pocas que hay en el bosque, pero aun as\xED el
-    juez solo me ha conseguido una orden para revisarla durante cinco minutos. \n\r\nTendr\xE9
+    juez solo me ha conseguido una orden para revisarla durante dos minutos! \n\r\nTendr\xE9
     que darme prisa, porque tengo la corazonada de que sus inquilinos podr\xEDan
     saber algo\u2026"
   m_isRightToLeft: 0
@@ -606,7 +606,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.3
+  m_fontSize: 20.1
   m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 1
