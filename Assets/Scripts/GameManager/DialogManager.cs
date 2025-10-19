@@ -98,6 +98,7 @@ public class DialogManager : MonoBehaviour
                 break;
             case Personajes.Abuela:
                 imageComponent.sprite = spriteAbuela;
+                dialog.speakerName = "Abuela";
                 break;
             default:
                 imageComponent.sprite = spriteNull;
